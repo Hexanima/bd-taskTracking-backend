@@ -9,7 +9,9 @@ export interface LoginPayload {
 export class LoginUseCase implements UseCase<JWT, Error> {
   async execute({ email, password }: LoginPayload) {
     const result: JWT = `${email}.${email}.${email}`;
+
     if (password === "") return new Error();
+    
     return result;
   }
 }
