@@ -3,7 +3,9 @@ import { LoginUseCase } from "./login";
 
 describe("Login UseCase", async () => {
   test("Given a valid payload and an existing user, should return a valid JWT", async () => {
-    const useCase = new LoginUseCase();
+    const useCase = new LoginUseCase({
+      "valid@email.com": "password",
+    });
     const result = await useCase.execute({
       email: "valid@email.com",
       password: "password",
