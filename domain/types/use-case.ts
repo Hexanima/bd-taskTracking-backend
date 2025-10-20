@@ -1,3 +1,3 @@
-export interface UseCase<TResponse, TErrors> {
-  execute: (payload?: unknown) => Promise<TResponse | TErrors>;
+export interface UseCase<TResponse = any, TErrors = never> {
+  execute: (payload: any) => Promise<TResponse | TErrors>;
 }
