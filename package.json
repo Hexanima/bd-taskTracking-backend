@@ -6,8 +6,8 @@
   "scripts": {
     "test": "vitest",
     "build": "tsc -p tsconfig.build.json",
-    "dev:api": "tsx watch api/app.ts",
-    "start:api": "node dist/api/app.js"
+    "dev": "tsx watch src/app.ts",
+    "start": "node dist/src/app.js"
   },
   "keywords": [],
   "author": "",
