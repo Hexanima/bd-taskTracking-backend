@@ -1,3 +1,4 @@
+import path from "path";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -6,5 +7,10 @@ export default defineConfig({
       exclude: ["**/index.ts"],
     },
     passWithNoTests: true,
+  },
+  resolve: {
+    alias: {
+      "@app-domain": path.resolve(__dirname, "./domain"),
+    },
   },
 });

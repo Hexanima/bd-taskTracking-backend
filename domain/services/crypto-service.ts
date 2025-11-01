@@ -1,4 +1,4 @@
-import { AsyncResult, JWT, UUID } from "@domain/types";
+import { AsyncResult, JWT, UUID } from "@app-domain/types";
 
 export interface CryptoService {
   generateUUID: () => AsyncResult<UUID>;

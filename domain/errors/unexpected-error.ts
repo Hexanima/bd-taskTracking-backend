@@ -1,4 +1,4 @@
-import { TaggedError } from "@domain/types/tagged-error";
+import { TaggedError } from "@app-domain/types/tagged-error";
 
 export class UnexpectedError extends TaggedError<"UnexpectedError"> {
   constructor(message?: string) {

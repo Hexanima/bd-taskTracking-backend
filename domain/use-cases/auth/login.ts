@@ -1,21 +1,35 @@
-import { NotFoundError } from "@domain/errors";
-import { Email, UseCase } from "../../types";
+import { NotFoundError, UnauthorizedError } from "@app-domain/errors";
+import { AsyncResult, Email, UseCase } from "../../types";
 import { JWT } from "../../types/jwt";
+import { CryptoService, UserService } from "@app-domain/services";
+import { isError } from "@app-domain/utils";
 
 export interface LoginPayload {
   email: Email;
   password: string;
 }
 
-export class LoginUseCase implements UseCase<JWT, NotFoundError> {
-  constructor(private db: Record<string, string>) {}
+export class LoginUseCase
+  implements UseCase<JWT, NotFoundError | UnauthorizedError>
+{
+  constructor(
+    private userService: UserService,
+    private cryptoService: CryptoService
+  ) {}
   async execute({ email, password }: LoginPayload) {
-    const existingPassword = this.db[email];
-    if (!existingPassword || existingPassword !== password)
-      return new NotFoundError();
+    const user = await this.userService.findOne({
+      filters: { email: email },
+    });
+    if (isError(user)) return user;
 
-    const result: JWT = `${email}.${email}.${email}`;
+    const isValidPassword = await this.cryptoService.compareHashes(
+      user.hashedPassword,
+      password
+    );
 
-    return result;
+    if (isError(isValidPassword) || !isValidPassword)
+      return new UnauthorizedError();
+
+    return await this.cryptoService.generateJWT(user);
   }
 }
