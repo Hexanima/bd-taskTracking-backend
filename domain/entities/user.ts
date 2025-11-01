@@ -1,4 +1,4 @@
-import { BaseEntity, Email } from "../types";
+import { BaseEntity, Email } from "@domain/types";
 
 export interface User extends BaseEntity {
   email: Email;
