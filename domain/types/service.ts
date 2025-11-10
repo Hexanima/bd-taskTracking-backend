@@ -1,7 +1,8 @@
-import { AlreadyExistsError, NotFoundError } from "@app-domain/errors";
-import { BaseEntity } from "./entity";
-import { AsyncResult } from "./result";
-import { UUID } from "./uuid";
+import { AlreadyExistsError } from "@app-domain/errors/already-exists-error.js";
+import { BaseEntity } from "./entity.js";
+import { AsyncResult } from "./result.js";
+import { NotFoundError } from "@app-domain/errors/not-found-error.js";
+import { UUID } from "./uuid.js";
 
 export type EntityFilterOptionsOrdering<T extends BaseEntity> = [
   keyof T,

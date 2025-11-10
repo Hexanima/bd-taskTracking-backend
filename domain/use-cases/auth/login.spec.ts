@@ -1,14 +1,26 @@
+import { mockUser, User } from "@app-domain/entities/index.js";
+import { CryptoService } from "@app-domain/services/crypto-service.js";
+import { MockedBaseService, MockedCryptoService, UserService } from "@app-domain/services/index.js";
+import { runUnsafe } from "@app-domain/utils/run-unsafe.js";
 import { describe, expect, test } from "vitest";
-import { LoginUseCase } from "./login";
+import { LoginUseCase } from "./login.js";
+
 
 describe("Login UseCase", async () => {
+  const cryptoService: CryptoService = new MockedCryptoService();
+  const testPassword = "";
+  const testUser = await mockUser(cryptoService, {
+    hashedPassword: await runUnsafe(cryptoService.hash(testPassword)),
+  });
+  const userService: UserService = new MockedBaseService<User>([
+    { ...testUser },
+  ]);
+
   test("Given a valid payload and an existing user, should return a valid JWT", async () => {
-    const useCase = new LoginUseCase({
-      "valid@email.com": "password",
-    });
+    const useCase = new LoginUseCase(userService, cryptoService);
     const result = await useCase.execute({
-      email: "valid@email.com",
-      password: "password",
+      email: testUser.email,
+      password: testPassword,
     });
 
     if (result instanceof Error) throw result;
