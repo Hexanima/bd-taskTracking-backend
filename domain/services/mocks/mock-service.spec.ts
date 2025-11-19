@@ -1,8 +1,9 @@
-import { describe, expect, it, test } from "vitest";
-import { BaseEntity } from "../entity";
-import { MockedBaseService } from "./mock-service";
-import { isError } from "@app-domain/utils";
-import { AlreadyExistsError, NotFoundError } from "@app-domain/errors";
+import { BaseEntity } from "@app-domain/types/entity.js";
+import { describe, expect, test } from "vitest";
+import { MockedBaseService } from "./mock-service.js";
+import { isError } from "@app-domain/utils/is-error.js";
+import { AlreadyExistsError } from "@app-domain/errors/already-exists-error.js";
+import { NotFoundError } from "@app-domain/errors/not-found-error.js";
 
 interface TestingEntity extends BaseEntity {
   name: string;

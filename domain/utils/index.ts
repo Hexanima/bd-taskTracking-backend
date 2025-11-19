@@ -1,2 +1,2 @@
-export * from "./is-error";
-export * from "./run-unsafe";
+export * from "./is-error.js";
+export * from "./run-unsafe.js";

@@ -1,5 +1,5 @@
-import { UnexpectedError } from "@app-domain/errors";
-import { TaggedError } from "./tagged-error";
+import { UnexpectedError } from "@app-domain/errors/unexpected-error.js";
+import { TaggedError } from "./tagged-error.js";
 
 export type Result<
   TResult extends any = any,

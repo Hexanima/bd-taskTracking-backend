@@ -10,7 +10,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@app-domain": path.resolve(__dirname, "./domain"),
+      "@app-domain": path.resolve(process.cwd(), "./domain"),
     },
   },
 });

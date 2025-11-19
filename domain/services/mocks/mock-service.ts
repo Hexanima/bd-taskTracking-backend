@@ -1,8 +1,15 @@
-import { AlreadyExistsError, NotFoundError } from "@app-domain/errors";
-import { BaseEntity } from "../entity";
-import { AsyncResult } from "../result";
-import { BaseService, UpdateFilterOptions } from "../service";
-import { UUID } from "../uuid";
+import { AlreadyExistsError } from "@app-domain/errors/already-exists-error.js";
+import { NotFoundError } from "@app-domain/errors/not-found-error.js";
+import { BaseEntity } from "@app-domain/types/entity.js";
+import { AsyncResult } from "@app-domain/types/result.js";
+import {
+  BaseService,
+  ManyEntityResult,
+  ManyFilterOptions,
+  OneFilterOptions,
+  UpdateFilterOptions,
+} from "@app-domain/types/service.js";
+import { UUID } from "@app-domain/types/uuid.js";
 
 export class MockedBaseService<TEntity extends BaseEntity>
   implements BaseService<TEntity>
@@ -21,9 +28,21 @@ export class MockedBaseService<TEntity extends BaseEntity>
 
   async deleteById(id: UUID): AsyncResult<void, NotFoundError> {
     if (this.items.find((item) => item.id !== id)) return new NotFoundError();
-
     this.items = this.items.map((item) =>
       item.id === id ? { ...item, deletedAt: new Date() } : item
+    );
+  }
+
+  async findById(id: UUID): AsyncResult<TEntity, NotFoundError> {
+    const result = this.items.find((item) => item.id === id);
+    if (!result) return new NotFoundError();
+    return result;
+  }
+
+  async restoreById(id: UUID): AsyncResult<void, NotFoundError> {
+    if (this.items.find((item) => item.id !== id)) return new NotFoundError();
+    this.items = this.items.map((item) =>
+      item.id === id ? { ...item, deletedAt: null } : item
     );
   }
 
@@ -62,4 +81,22 @@ export class MockedBaseService<TEntity extends BaseEntity>
 
     return filteredItemIds.length;
   }
+
+  // TODO: IMPLEMENT
+
+  async delete(
+    opts: ManyFilterOptions<TEntity>
+  ): AsyncResult<number, NotFoundError> {}
+
+  async findMany(
+    opts?: ManyFilterOptions<TEntity> | undefined
+  ): AsyncResult<ManyEntityResult<TEntity>> {}
+
+  async findOne(
+    opts?: OneFilterOptions<TEntity> | undefined
+  ): AsyncResult<TEntity, NotFoundError> {}
+
+  async restore(
+    opts: ManyFilterOptions<TEntity>
+  ): AsyncResult<void, NotFoundError> {}
 }

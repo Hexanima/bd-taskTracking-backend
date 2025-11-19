@@ -1,6 +1,6 @@
-import { TaggedError } from "./tagged-error";
-import { AsyncResult } from "./result";
-import { UnexpectedError } from "@app-domain/errors";
+import { UnexpectedError } from "@app-domain/errors/unexpected-error.js";
+import { TaggedError } from "./tagged-error.js";
+import { AsyncResult } from "./result.js";
 
 export interface UseCase<
   TResponse = any,

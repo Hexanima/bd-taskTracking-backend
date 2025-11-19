@@ -1,6 +1,7 @@
-import { CryptoService } from "@app-domain/services";
-import { User } from "../user";
-import { runUnsafe } from "@domain/utils";
+import { CryptoService } from "@app-domain/services/crypto-service.js";
+import { User } from "../user.js";
+import { runUnsafe } from "@app-domain/utils/run-unsafe.js";
+
 
 export async function mockUser(
   crypto: CryptoService,
