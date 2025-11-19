@@ -42,12 +42,10 @@ export interface BaseService<TEntity extends BaseEntity> {
   /**
    * TODO: Plantear tema de opciones (capaz usar el manyFilterOptions)
    */
-  update: (entity: UpdateFilterOptions<TEntity>) => AsyncResult<void>;
+  update: (entity: UpdateFilterOptions<TEntity>) => AsyncResult<number>;
   deleteById: (id: UUID) => AsyncResult<void, NotFoundError>;
   restoreById: (id: UUID) => AsyncResult<void, NotFoundError>;
-  delete: (
-    opts: ManyFilterOptions<TEntity>
-  ) => AsyncResult<void, NotFoundError>;
+  delete: (opts: ManyFilterOptions<TEntity>) => AsyncResult<number>;
   restore: (
     opts: ManyFilterOptions<TEntity>
   ) => AsyncResult<void, NotFoundError>;

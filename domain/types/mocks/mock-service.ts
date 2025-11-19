@@ -27,6 +27,39 @@ export class MockedBaseService<TEntity extends BaseEntity>
     );
   }
 
-  async update(entity: UpdateFilterOptions<TEntity>): AsyncResult<void> {
+  async update({
+    updatedData,
+    filters,
+  }: UpdateFilterOptions<TEntity>): AsyncResult<number> {
+    const filterArray =
+      filters === undefined
+        ? []
+        : filters instanceof Array
+        ? [...filters]
+        : [filters];
+    const filteredItemIds: UUID[] = (
+      filters === undefined
+        ? [...this.items]
+        : this.items.filter((item) => {
+            for (const filterItem of filterArray) {
+              let isValid = true;
+              const keyVal = Object.entries(filterItem);
+              for (const [key, val] of keyVal) {
+                if (item[key as keyof TEntity] !== val) {
+                  isValid = false;
+                }
+              }
+              if (isValid) return true;
+            }
+            return false;
+          })
+    ).map((item) => item.id);
+
+    this.items = this.items.map((item) => {
+      if (filteredItemIds.includes(item.id)) return { ...item, ...updatedData };
+      return item;
+    });
+
+    return filteredItemIds.length;
   }
 }

@@ -9,6 +9,17 @@ interface TestingEntity extends BaseEntity {
   order: number;
 }
 
+function mockTestingEntity(opts?: Partial<TestingEntity>): TestingEntity {
+  return {
+    id: crypto.randomUUID(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    name: "Prueba",
+    order: 1,
+    ...opts,
+  };
+}
+
 describe("MockedService Tests", async () => {
   describe("Constructor", async () => {
     test("No list should create empty list", async () => {
@@ -92,7 +103,7 @@ describe("MockedService Tests", async () => {
     });
     test("If item doesn't exists, should return NotFoundError", async () => {
       const mockedEntity: TestingEntity = {
-        id: crypto.randomUUID(),
+        id: "b-b-b-b-b",
         createdAt: new Date(),
         updatedAt: new Date(),
         name: "Prueba",
@@ -101,12 +112,82 @@ describe("MockedService Tests", async () => {
 
       const db = new MockedBaseService<TestingEntity>([mockedEntity]);
 
-      const result = await db.deleteById(crypto.randomUUID());
+      const result = await db.deleteById("a-a-a-a-a");
 
       expect(result).toBeInstanceOf(NotFoundError);
 
       expect(db.items).toHaveLength(1);
+      expect(db.items[0].id).toBe("b-b-b-b-b");
       expect(db.items[0].deletedAt).toBeFalsy();
+    });
+  });
+
+  describe("Update Method", async () => {
+    test("If item doesn't exist, should return 0", async () => {
+      const db = new MockedBaseService<TestingEntity>([]);
+      const result = await db.update({ updatedData: { name: "SARACATUNGA" } });
+
+      expect(result).toBe(0);
+    });
+    test("Without filters, should update everything", async () => {
+      const db = new MockedBaseService<TestingEntity>([
+        mockTestingEntity({ name: "a" }),
+        mockTestingEntity({ name: "b" }),
+        mockTestingEntity({ name: "c" }),
+      ]);
+      for (const item of db.items) {
+        expect(item.name).not.toBe("SARACATUNGA");
+      }
+      const result = await db.update({ updatedData: { name: "SARACATUNGA" } });
+
+      expect(result).toBe(3);
+
+      for (const item of db.items) {
+        expect(item.name).toBe("SARACATUNGA");
+      }
+    });
+    test("With a filter, should update ONLY the filtered opt", async () => {
+      const db = new MockedBaseService<TestingEntity>([
+        mockTestingEntity({ name: "a", id: "a-a-a-a-a" }),
+        mockTestingEntity({ name: "b", id: "b-b-b-b-b" }),
+        mockTestingEntity({ name: "c", id: "c-c-c-c-c" }),
+      ]);
+      for (const item of db.items) {
+        expect(item.name).not.toBe("SARACATUNGA");
+      }
+      const result = await db.update({
+        updatedData: { name: "SARACATUNGA" },
+        filters: { name: "a" },
+      });
+
+      expect(result).toBe(1);
+
+      for (const item of db.items) {
+        if (item.id === "a-a-a-a-a") expect(item.name).toBe("SARACATUNGA");
+        else expect(item.name).not.toBe("SARACATUNGA");
+      }
+    });
+    test("With multiple filters, should update ONLY the filtered opt", async () => {
+      const db = new MockedBaseService<TestingEntity>([
+        mockTestingEntity({ name: "a", id: "a-a-a-a-a" }),
+        mockTestingEntity({ name: "b", id: "b-b-b-b-b" }),
+        mockTestingEntity({ name: "c", id: "c-c-c-c-c" }),
+      ]);
+      for (const item of db.items) {
+        expect(item.name).not.toBe("SARACATUNGA");
+      }
+      const result = await db.update({
+        updatedData: { name: "SARACATUNGA" },
+        filters: [{ name: "a" }, { name: "b" }],
+      });
+
+      expect(result).toBe(2);
+
+      for (const item of db.items) {
+        if (item.id === "a-a-a-a-a") expect(item.name).toBe("SARACATUNGA");
+        else if (item.id === "b-b-b-b-b") expect(item.name).toBe("SARACATUNGA");
+        else expect(item.name).not.toBe("SARACATUNGA");
+      }
     });
   });
 });
